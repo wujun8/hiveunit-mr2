@@ -2,7 +2,7 @@
 
 ### Usage
 
-The hiveunit-mr2 framework provides a convenient wrapper around the existing Mini Hive Server and MiniCluster testing tools that are currently being used by the developers of YARN and MR2. It will allow you to easily fire up a MiniCluster, a Mini Hive Server, including an internal Derby database in a test case that will allow you to test your Hive QL scripts. 
+The hiveunit-mr2 framework provides a convenient wrapper around the existing MiniHiveServer2 and MiniCluster testing tools that are currently being used by the developers of Hive, MR2 & YARN. It will allow you to easily fire up a MiniCluster, a MiniHiveServer2, including an internal Derby database in a test case that will allow you to test your Hive QL scripts. 
 
 The basic sequence of commands a test case would need to follow is:
   
