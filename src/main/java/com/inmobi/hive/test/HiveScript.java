@@ -1,7 +1,6 @@
 package com.inmobi.hive.test;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
@@ -40,30 +39,26 @@ public class HiveScript {
         List<String> commands = Lists.newArrayList();
         BufferedReader in = null;
         try {
-          in = new BufferedReader(new FileReader(scriptFile));
-          String line;
-          StringBuilder command = new StringBuilder();
-          while ((line = in.readLine()) != null) {
-            if (!line.isEmpty() && !line.startsWith("--")) {
-              if (excludeLine(line)) {
-                  continue;
-              }
-              if (line.endsWith(";")) {
-                command.append(replaceParams(line.replace(";", "")));
-                commands.add(command.toString());
-                command = new StringBuilder();
-              }
-              else {
-                  command.append(replaceParams(line));
-                  //need to make sure there is a space between lines
-                  command.append(" ");
-              }
+            in = new BufferedReader(new FileReader(scriptFile));
+            String line;
+            StringBuilder command = new StringBuilder();
+            while ((line = in.readLine()) != null) {
+                if (skippableLine(line) || excludeLine(line)) {
+                    continue;
+                }
+                if (line.endsWith(";")) {
+                    command.append(replaceParams(line.replace(";", "")));
+                    commands.add(command.toString());
+                    command = new StringBuilder();
+                }
+                else {
+                    command.append(replaceParams(line));
+                    //need to make sure there is a space between lines
+                    command.append(" ");
+                }
             }
-          }
-        } catch (FileNotFoundException e) {
-          throw new RuntimeException(e);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         finally {
             if (in != null) {
@@ -75,7 +70,7 @@ public class HiveScript {
             }
         }
         return commands;
-      }
+    }
 
     private boolean excludeLine(String line) {
         if (excludes == null) {
@@ -89,11 +84,18 @@ public class HiveScript {
         return false;
     }
 
+    private boolean skippableLine(String line) {
+        if (line.isEmpty() || line.startsWith("--")) {
+            return true;
+        }
+        return false;
+    }
+
     private String replaceParams(String line) {
-       if (substitutor == null) {
-           return line;
-       }
-       return substitutor.replace(line);
+        if (substitutor == null) {
+            return line;
+        }
+        return substitutor.replace(line);
     }
 
 }
