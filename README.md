@@ -1,8 +1,8 @@
-## hiveunit-mr2: A framework to test Hive scripts with YARN and MR2.
+## hiveunit-mr2: A library to test Hive scripts with YARN and MR2.
 
 ### Usage
 
-The hiveunit-mr2 framework provides a convenient wrapper around the existing MiniHiveServer2 and MiniCluster testing tools that are currently being used by the developers of Hive, MR2 & YARN. It will allow you to easily fire up a MiniCluster, a MiniHiveServer2, including an internal Derby database in a test case that will allow you to test your Hive QL scripts. 
+The hiveunit-mr2 library provides a convenient wrapper around the existing MiniHiveServer2 and MiniCluster testing tools that are currently being used by the developers of Hive, MR2 & YARN. It will allow you to easily fire up a MiniCluster, a MiniHiveServer2, including an internal Derby database in a test case that will allow you to test your Hive QL scripts. 
 
 The basic sequence of commands a test case would need to follow is:
   
@@ -30,7 +30,7 @@ Finally, the use of MiniCluster to test MapReduce programs is also provided alon
 
 ### Credit 
 
-This project was inspired by an initial Hive Testing framework built by 
+This project was inspired by an initial Hive Testing library built by 
 Edward Capiolli (https://github.com/edwardcapriolo/hive_test).
 
 Special appreciation to the development teams that have put countless hours into the the new releases and improvements to Hadoop and Hive.  They have really improved the testing tools.  
