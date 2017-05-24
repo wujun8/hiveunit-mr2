@@ -63,4 +63,20 @@ public class HiveSuiteTest {
         assertTrue(results.contains("1949\t111\t1"));
     }
 
+
+    @Test
+    public void testManagedTableUrl() throws Throwable {
+        File inputRawData = new File("src/test/resources/files/url.txt");
+        String inputRawDataAbsFilePath = inputRawData.getAbsolutePath();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("TABLE_DATA", inputRawDataAbsFilePath);
+
+        List<String> results = testSuite.executeScript("src/test/resources/scripts/managed_url.hql", params);
+        System.out.println("*************************");
+        for (String s : results) {
+            System.out.println(s);
+        }
+        System.out.println("*************************");
+    }
+
 }
