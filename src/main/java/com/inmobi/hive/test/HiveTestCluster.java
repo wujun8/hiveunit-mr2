@@ -94,6 +94,12 @@ public class HiveTestCluster {
         if (proc == null) {
             // this is for all other commands
             proc = new Driver(hiveConf);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (int i=1; i< tokens.length; i++) {
+                sb.append(tokens[i]).append(' ');
+            }
+            statement = sb.toString();
         }
         try {
             proc.run(statement);
