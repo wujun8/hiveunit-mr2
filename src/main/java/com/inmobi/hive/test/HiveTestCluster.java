@@ -51,17 +51,17 @@ public class HiveTestCluster {
         return this.fs;
     }
     
-    public void stop() throws Exception {
-        LocalFileSystem localFileSystem = FileSystem.getLocal(miniHS2.getHiveConf());
+    public void stop() {
         miniHS2.stop();
+    }
+
+    public void clean() throws Exception {
+        LocalFileSystem localFileSystem = FileSystem.getLocal(miniHS2.getHiveConf());
         FileFilter filter = new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                if (pathname.isDirectory() && 
-                        pathname.getName().startsWith("MiniMRCluster_")) {
-                    return true;
-                }
-                return false;
+                return pathname.isDirectory() &&
+                        pathname.getName().startsWith("MiniMRCluster_");
             }
         };
         File targetDir = new File("target");
@@ -71,7 +71,7 @@ public class HiveTestCluster {
             localFileSystem.delete(clusterRoot, true);
         }
     }
-    
+
     public List<String> executeStatements(List<String> statements) throws HiveSQLException {
         List<String> results = new ArrayList<>();
         for (String statement : statements) {

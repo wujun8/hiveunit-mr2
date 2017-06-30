@@ -3,6 +3,7 @@ package com.inmobi.hive.test;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hive.service.cli.HiveSQLException;
 
@@ -37,12 +38,15 @@ public class HiveTestSuite {
         }
     }
     
-    public void shutdownTestCluster() {
+    public void shutdownTestCluster(boolean clean) {
         if (cluster == null) {
             return;
         }
         try {
             cluster.stop();
+            if (clean) {
+                cluster.clean();
+            }
         } catch (Exception e) {
             throw new RuntimeException("Unable to stop test cluster", e);
         }
@@ -58,16 +62,24 @@ public class HiveTestSuite {
     
     public List<String> executeScript(String scriptFile, Map<String, String> params, List<String> excludes) {
         HiveScript hiveScript = new HiveScript(scriptFile, params, excludes);
+        return executeStatements(hiveScript.getStatements());
+    }
+
+    public List<String> executeStatements(List<String> statements) {
         if (cluster == null) {
             throw new IllegalStateException("No active cluster to run script with");
         }
         List<String> results = null;
         try {
-            results = cluster.executeStatements(hiveScript.getStatements());
+            results = cluster.executeStatements(statements);
         } catch (HiveSQLException e) {
             throw new RuntimeException("Unable to execute script", e);
         }
         return results;
+    }
+
+    public List<String> executeStatements(String... statements) {
+        return executeStatements(Lists.newArrayList(statements));
     }
     
     public FileSystem getFS() {

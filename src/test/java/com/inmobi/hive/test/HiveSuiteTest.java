@@ -28,7 +28,7 @@ public class HiveSuiteTest {
     
     @After
     public void tearDown() throws Exception {
-        testSuite.shutdownTestCluster();
+        testSuite.shutdownTestCluster(false);
     }
     
     @Test
@@ -68,10 +68,23 @@ public class HiveSuiteTest {
     public void testManagedTableUrl() throws Throwable {
         File inputRawData = new File("src/test/resources/files/url.txt");
         String inputRawDataAbsFilePath = inputRawData.getAbsolutePath();
+        File inputRawData2 = new File("src/test/resources/files/url2.txt");
+        String inputRawDataAbsFilePath2 = inputRawData2.getAbsolutePath();
         Map<String, String> params = new HashMap<String, String>();
         params.put("TABLE_DATA", inputRawDataAbsFilePath);
+        params.put("TABLE_DATA2", inputRawDataAbsFilePath2);
 
         List<String> results = testSuite.executeScript("src/test/resources/scripts/managed_url.hql", params);
+        System.out.println("*************************");
+        for (String s : results) {
+            System.out.println(s);
+        }
+        System.out.println("*************************");
+    }
+
+    @Test
+    public void testQueryUrl() {
+        List<String> results = testSuite.executeStatements("select * from url where dt='20170101'");
         System.out.println("*************************");
         for (String s : results) {
             System.out.println(s);
