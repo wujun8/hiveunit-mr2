@@ -63,6 +63,13 @@ public class HiveSuiteTest {
         assertTrue(results.contains("1949\t111\t1"));
     }
 
+    private void printResult(List<String> results) {
+        System.out.println("*************************");
+        for (String s : results) {
+            System.out.println(s);
+        }
+        System.out.println("*************************");
+    }
 
     @Test
     public void testManagedTableUrl() throws Throwable {
@@ -75,21 +82,19 @@ public class HiveSuiteTest {
         params.put("TABLE_DATA2", inputRawDataAbsFilePath2);
 
         List<String> results = testSuite.executeScript("src/test/resources/scripts/managed_url.hql", params);
-        System.out.println("*************************");
-        for (String s : results) {
-            System.out.println(s);
-        }
-        System.out.println("*************************");
+        printResult(results);
     }
 
     @Test
     public void testQueryUrl() {
         List<String> results = testSuite.executeStatements("select * from url where dt='20170101'");
-        System.out.println("*************************");
-        for (String s : results) {
-            System.out.println(s);
-        }
-        System.out.println("*************************");
+        printResult(results);
+    }
+
+    @Test
+    public void testQueryInIncrements() {
+        List<String> results = testSuite.executeStatements("select t1.url from url t1 where t1.dt='20170101' and not exists (select t2.url from url t2 where t2.dt='20170102' and t1.url=t2.url)");
+        printResult(results);
     }
 
 }
