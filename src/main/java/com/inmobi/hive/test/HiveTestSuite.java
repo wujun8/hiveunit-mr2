@@ -48,25 +48,21 @@ public class HiveTestSuite {
         }
     }
     
-    public List<String> executeScript(String scriptFile) {
+    public List<String> executeScript(String scriptFile) throws HiveSQLException {
         return executeScript(scriptFile, null, null);
     }
     
-    public List<String> executeScript(String scriptFile, Map<String, String> params) {
+    public List<String> executeScript(String scriptFile, Map<String, String> params) throws HiveSQLException {
         return executeScript(scriptFile, params, null);
     }
     
-    public List<String> executeScript(String scriptFile, Map<String, String> params, List<String> excludes) {
+    public List<String> executeScript(String scriptFile, Map<String, String> params, List<String> excludes) throws HiveSQLException {
         HiveScript hiveScript = new HiveScript(scriptFile, params, excludes);
         if (cluster == null) {
             throw new IllegalStateException("No active cluster to run script with");
         }
         List<String> results = null;
-        try {
             results = cluster.executeStatements(hiveScript.getStatements());
-        } catch (HiveSQLException e) {
-            throw new RuntimeException("Unable to execute script", e);
-        }
         return results;
     }
     
