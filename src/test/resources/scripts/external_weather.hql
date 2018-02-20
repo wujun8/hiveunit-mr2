@@ -1,3 +1,3 @@
-CREATE EXTERNAL TABLE weather (year STRING, temp INT, quality INT) 
+CREATE EXTERNAL TABLE weather_ext (year STRING, temp INT, quality INT) 
   ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LOCATION '${WEATHER_DATA}';
-SELECT * FROM weather;
+SELECT * FROM weather_ext;

@@ -1,33 +1,38 @@
 package com.inmobi.hive.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hive.service.cli.HiveSQLException;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.inmobi.hive.test.HiveTestSuite;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class HiveSuiteTest {
     
-    private HiveTestSuite testSuite;
+    private final static Logger log = LoggerFactory.getLogger(HiveSuiteTest.class);
+    private static HiveTestSuite testSuite;
     
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
+        log.debug("In HiveSuiteTest setup method");
         testSuite = new HiveTestSuite();
         testSuite.createTestCluster();
     }
     
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
+        log.debug("In HiveSuiteTest tearDown method");
         testSuite.shutdownTestCluster();
     }
     
@@ -43,6 +48,23 @@ public class HiveSuiteTest {
         assertEquals("2", results.get(0));
     }
     
+    @Test(expected = HiveSQLException.class)
+    public void testInvalidSyntax() throws Throwable {
+        List<String> results = testSuite.executeScript("src/test/resources/scripts/invalid.hql");
+    }
+
+    @Test
+    public void testTableJoin() throws Throwable {
+        File inputRawData = new File("src/test/resources/files/emps.csv");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("EMP_DATA", inputRawData.getAbsolutePath());
+        inputRawData = new File("src/test/resources/files/dept_emp.csv");
+        params.put("DEPT_EMP_DATA", inputRawData.getAbsolutePath());
+        List<String> results = testSuite.executeScript("src/test/resources/scripts/join_test.hql",params);
+        assertEquals(1, results.size());
+        assertEquals("11", results.get(0));
+    }
+
     @Test
     public void testExternalTable() throws Throwable {
         FileSystem fs = testSuite.getFS();
